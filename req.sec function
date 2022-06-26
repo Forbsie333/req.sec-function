@@ -1,0 +1,53 @@
+euroindex(int euromult, int europlus)=>
+    string ticket01 = input.symbol(defval='EURUSD', title='', group='Tickets:')
+    string ticket02 = input.symbol(defval='EURJPY', title='', group='Tickets:')
+    string ticket03 = input.symbol(defval='EURGBP', title='', group='Tickets:')
+    string ticket04 = input.symbol(defval='EURAUD', title='', group='Tickets:')
+    string ticket05 = input.symbol(defval='EURCHF', title='', group='Tickets:')
+    string ticket07 = input.symbol(defval='EURCAD', title='', group='Tickets:')
+    [A1, A2, A3] = request.security(ticket01, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [B1, B2, B3] = request.security(ticket02, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [C1, C2, C3] = request.security(ticket03, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [D1, D2, D3] = request.security(ticket04, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [E1, E2, E3] = request.security(ticket05, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [G1, G2, G3] = request.security(ticket07, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    AAA1 = A2*B2*C2*D2*E2*G2
+    euromax = ta.highest(AAA1, 3000)
+    euromin = ta.lowest (AAA1, 3000)
+    euronorm = ((AAA1 - euromin) / (euromax - euromin) * euromult) + europlus
+
+usdindex(int usdmult,int usdplus) =>
+    string ticket01 = input.symbol(defval='EURUSD', title='', group='Tickets:')
+    string ticket11 = input.symbol(defval='GBPUSD', title='', group='Tickets:')
+    string ticket14 = input.symbol(defval='USDJPY', title='', group='Tickets:')
+    string ticket15 = input.symbol(defval='USDCAD', title='', group='Tickets:')
+    string ticket16 = input.symbol(defval='USDCHF', title='', group='Tickets:')
+    string ticket17 = input.symbol(defval='AUDUSD', title='', group='Tickets:')
+    [A1, A2, A3] = request.security(ticket01, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [K1, K2, K3] = request.security(ticket11, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [N1, N2, N3] = request.security(ticket14, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [O1, O2, O3] = request.security(ticket15, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [P1, P2, P3] = request.security(ticket16, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [Q1, Q2, Q3] = request.security(ticket17, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    CCC1 = N2*O2/A2/K2*P2/Q2
+    usdmax = ta.highest(CCC1, 3000)
+    usdmin = ta.lowest (CCC1, 3000)
+    usdnorm = ((CCC1 - usdmin) / (usdmax - usdmin) * usdmult) + usdplus
+
+
+var currentplot = euroindex(100, 50)
+
+if syminfo.basecurrency == 'EUR'
+    currentplot := euroindex(100, 50)
+else if syminfo.basecurrency == 'USD' 
+    currentplot := usdindex(100, 50)
+// else if syminfo.basecurrency == 'AUD'
+    // currentplot := audindex(100, 50)
+// else if syminfo.basecurrency == 'CAD'
+    // currentplot := cadindex(100, 50)
+// else if syminfo.basecurrency == 'GBP'
+    // currentplot := gbpindex(100, 50)
+
+    
+reee = ta.rsi(currentplot, 14)
+plot(reee)
