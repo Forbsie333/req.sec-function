@@ -1,3 +1,5 @@
+indicator("indexfunction", shorttitle="index", overlay=false)
+
 euroindex(int euromult, int europlus)=>
     string ticket01 = input.symbol(defval='EURUSD', title='', group='Tickets:')
     string ticket02 = input.symbol(defval='EURJPY', title='', group='Tickets:')
@@ -34,6 +36,59 @@ usdindex(int usdmult,int usdplus) =>
     usdmin = ta.lowest (CCC1, 3000)
     usdnorm = ((CCC1 - usdmin) / (usdmax - usdmin) * usdmult) + usdplus
 
+audindex(int audmult, int audplus) =>
+    string ticket04 = input.symbol(defval='EURAUD', title='', group='Tickets:')
+    string ticket08 = input.symbol(defval='GBPAUD', title='', group='Tickets:')
+    string ticket17 = input.symbol(defval='AUDUSD', title='', group='Tickets:')
+    string ticket18 = input.symbol(defval='AUDCAD', title='', group='Tickets:')
+    string ticket20 = input.symbol(defval='AUDJPY', title='', group='Tickets:')
+    string ticket21 = input.symbol(defval='AUDCHF', title='', group='Tickets:')
+    [D2, D3] = request.security(ticket04, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [H2, H3] = request.security(ticket08, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [Q2, Q3] = request.security(ticket17, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [R2, R3] = request.security(ticket18, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [T2, T3] = request.security(ticket20, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [U2, U3] = request.security(ticket21, "D", [close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    DDD1 = Q2/D2/H2*R2*T2*U2
+    audmax = ta.highest(DDD1, 3000)
+    audmin = ta.lowest (DDD1, 3000)
+    audnorm = ((DDD1 - audmin) / (audmax - audmin) * audmult) + audplus
+
+cadindex(int cadmult, cadplus) =>
+    string ticket07 = input.symbol(defval='EURCAD', title='', group='Tickets:')
+    string ticket09 = input.symbol(defval='GBPCAD', title='', group='Tickets:')
+    string ticket15 = input.symbol(defval='USDCAD', title='', group='Tickets:')
+    string ticket18 = input.symbol(defval='AUDCAD', title='', group='Tickets:')
+    string ticket26 = input.symbol(defval='CADJPY', title='', group='Tickets:')
+    string ticket27 = input.symbol(defval='CADCHF', title='', group='Tickets:')
+    [G1, G2, G3] = request.security(ticket07, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [I1, I2, I3] = request.security(ticket09, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [O1, O2, O3] = request.security(ticket15, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [R1, R2, R3] = request.security(ticket18, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [Z1, Z2, Z3] = request.security(ticket26, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [AA1, AA2, AA3] = request.security(ticket27, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    EEE1 = Z2/R2/I2/O2/G2*AA2
+    cadmax = ta.highest(EEE1, 3000)
+    cadmin = ta.lowest (EEE1, 3000)
+    cadnorm = ((EEE1 - cadmin) / (cadmax - cadmin) * cadmult) + cadplus
+
+gbpindex(gbpmult, gbpplus) =>
+    string ticket03 = input.symbol(defval='EURGBP', title='', group='Tickets:')
+    string ticket08 = input.symbol(defval='GBPAUD', title='', group='Tickets:')
+    string ticket09 = input.symbol(defval='GBPCAD', title='', group='Tickets:')
+    string ticket10 = input.symbol(defval='GBPJPY', title='', group='Tickets:')
+    string ticket11 = input.symbol(defval='GBPUSD', title='', group='Tickets:')
+    string ticket12 = input.symbol(defval='GBPCHF', title='', group='Tickets:')
+    [C1, C2, C3] = request.security(ticket03, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [H1, H2, H3] = request.security(ticket08, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [I1, I2, I3] = request.security(ticket09, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [J1, J2, J3] = request.security(ticket10, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [K1, K2, K3] = request.security(ticket11, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    [L1, L2, L3] = request.security(ticket12, "D", [high, close, volume], barmerge.gaps_off, barmerge.lookahead_on)
+    FFF1 = H2*I2/C2*J2*K2*L2
+    gbpmax = ta.highest(FFF1, 3000)
+    gbpmin = ta.lowest (FFF1, 3000)
+    gbpnorm = ((FFF1 - gbpmin) / (gbpmax - gbpmin) * gbpmult) + gbpplus
 
 var currentplot = euroindex(100, 50)
 
@@ -41,13 +96,51 @@ if syminfo.basecurrency == 'EUR'
     currentplot := euroindex(100, 50)
 else if syminfo.basecurrency == 'USD' 
     currentplot := usdindex(100, 50)
-// else if syminfo.basecurrency == 'AUD'
-    // currentplot := audindex(100, 50)
-// else if syminfo.basecurrency == 'CAD'
-    // currentplot := cadindex(100, 50)
-// else if syminfo.basecurrency == 'GBP'
-    // currentplot := gbpindex(100, 50)
+else if syminfo.basecurrency == 'AUD'
+    currentplot := audindex(100, 50)
+else if syminfo.basecurrency == 'CAD'
+    currentplot := cadindex(100, 50)
+else if syminfo.basecurrency == 'GBP'
+    currentplot := gbpindex(100, 50)
 
     
-reee = ta.rsi(currentplot, 14)
-plot(reee)
+plot(currentplot, color=color.red)
+
+cprsi = ta.rsi(close, 25)
+// plot(cprsi, color= color.red)
+stddev = ta.stdev(close, 10)
+upper = ta.ema(ta.change(close) <= 0 ? 0 : stddev, 25)
+lower = ta.ema(ta.change(close) > 0 ? 0 : stddev, 25)
+rvi = upper / (upper + lower) * 100
+// plot(rvi, title="RVI", color=color.red)
+
+cprsi1 = ta.rsi(currentplot, 25)
+// plot(cprsi1, color= color.blue)
+stddev1 = ta.stdev(currentplot, 10)
+upper1 = ta.ema(ta.change(currentplot) <= 0 ? 0 : stddev1, 25)
+lower1 = ta.ema(ta.change(currentplot) > 0 ? 0 : stddev1, 25)
+rvi1 = upper1 / (upper1 + lower1) * 100
+// plot(rvi1, title="RVI", color=color.blue)
+
+rsima1 = ta.sma(cprsi, 10)
+rsima2 = ta.sma(cprsi1, 10)
+rvima1 = ta.sma(rvi, 10)
+rvima2 = ta.sma(rvi1, 10)
+
+arsi = rsima1 * 2
+brsi = rsima2 * 2
+arvi = rvima1 * 2
+brvi = rvima2 * 2
+
+A = (arsi + arvi) / 2
+B = (brsi + brvi) / 2
+plot(A, color=color.red)
+plot(B, color=color.blue)
+
+
+// plot(arsi, color=color.red)
+// plot(brsi, color=color.blue)
+// plot(arvi, color=color.red)
+// plot(brvi, color=color.blue)
+
+
